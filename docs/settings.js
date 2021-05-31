@@ -13,21 +13,21 @@ function createCredentialsList(select, settings) {
 	select.append("<option>");
 	select.append(
 		$("<option>")
-			.attr({"value":"*"})
+			.attr({"value":JSON.stringify({id:'*'})})
 			.text("All")
 	);
 	for(var i in settings.credentials) {
 		var cred = settings.credentials[i];
-		var text = cred.instant + " - " + cred.user.name + " (" + cred.user.displayName + ")";
+		var text = cred.instant + " - " + cred.user.name + " (" + cred.user.displayName + ") [" + cred.transports + "]";
 		var o = $("<option>")
-			.attr({"value":cred.id})
+			.attr({"value":JSON.stringify(cred,['id','transports'])})
 			.text(text);
 		select.append(o);		
 	}
 	return select;
 }
 
-function addCredential(settings, user, id, publicKey) {
+function addCredential(settings, user, id, transports, publicKey) {
 	settings.credentials[id] = {
 		"instant":new Date().toISOString(),
 		"user":{
@@ -36,6 +36,7 @@ function addCredential(settings, user, id, publicKey) {
 			"displayName":user.displayName,
 		},
 		"id":id,
+		"transports" : transports,
 		"credentialPublicKey":credentialPublicKey,
 	};
 	saveSettings(settings);
